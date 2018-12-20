@@ -23,9 +23,14 @@ Cadastro e acompanhamento de tarefas
 
 ### Para entrar na linha de comando de cada container utilize
 
-> Container `php-fpm` nome: `sigtar-php-fpm`
-> Container `mysql` nome: `sigtar-mysql`
-> Container `nginx` nome: `sigtar-webserver`
+> Container `php-fpm`
+`sigtar-php-fpm`
+
+> Container `mysql`
+`sigtar-mysql`
+
+> Container `nginx`
+`sigtar-webserver`
 
 `docker exec -it <nome-do-container> bash`
 
