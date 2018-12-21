@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import home from '../components/main/Home'
+import userRegister from '../components/user/Register'
 import notFound from '../components/main/NotFound'
 import mainTasks from '../components/task/Main'
 import tasks from '../components/task/Tasks'
@@ -41,18 +42,12 @@ const router = new Router({
                 }
             ]
         },
-        // {
-        //     title: 'Tasks',
-        //     name: 'create-task',
-        //     path: '/tasks/create',
-        //     component: createTask
-        // },
-        // {
-        //     name: 'task',
-        //     path: '/tasks/:id',
-        //     component: task,
-        //     props: true
-        // },
+        {
+            title: 'Cadastro de usuário',
+            name: 'user.register',
+            path: '/register',
+            component: userRegister
+        },
         {
             title: 'Not Found',
             name: 'notfound',

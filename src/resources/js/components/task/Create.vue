@@ -127,7 +127,7 @@
                             this.errors = err.request.data.errors
                         }
                         else {
-                            console.error(err.message)
+                            console.log(err.message)
                         }
                     })
             }

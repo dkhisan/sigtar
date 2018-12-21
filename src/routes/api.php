@@ -23,3 +23,7 @@ Route::prefix('tasks')->group(function () {
     Route::put('{id}/edit', 'TaskController@update');
     Route::delete('{id}/remove', 'TaskController@destroy');
 });
+
+Route::prefix('users')->group(function () {
+    Route::post('/create', 'UserController@store');
+});
