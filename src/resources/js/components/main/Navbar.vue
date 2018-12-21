@@ -1,6 +1,6 @@
 <template>
     <nav class="navbar navbar-expand justify-content-between fixed-top navbar-dark bg-primary shadow">
-        <span class="navbar-brand">SysTask</span>
+        <span class="navbar-brand">SIGTAR</span>
         <ul class="navbar-nav">
             <li class="nav-item">
                 <router-link :to="{name: 'home'}" class="nav-link">Home</router-link>

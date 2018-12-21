@@ -19,7 +19,7 @@
         <!-- Custom CSS -->
         <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
 
-        <title>SysTask</title>
+        <title>Sistema de Tarefas</title>
     </head>
     <body>
         <div id="app">

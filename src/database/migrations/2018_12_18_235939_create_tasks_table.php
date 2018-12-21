@@ -24,8 +24,7 @@ class CreateTasksTable extends Migration
             $table->text('description');
             $table->dateTime('deadline');
             $table->enum('priority', ['low', 'medium', 'high'])
-                ->default('low')
-                ->nullable();
+                ->default('low');
             $table->boolean('finished')
                 ->default(false)
                 ->nullable();
