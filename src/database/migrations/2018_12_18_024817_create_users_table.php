@@ -19,8 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('username')->unique();
             $table->string('password');
             $table->boolean('active')
-                ->default(true)
-                ->nullable();
+                ->default(true);
             $table->timestamps();
         });
     }

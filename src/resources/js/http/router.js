@@ -2,7 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import home from '../components/main/Home'
-import notfound from '../components/main/NotFound'
+import notFound from '../components/main/NotFound'
+import mainTasks from '../components/task/Main'
 import tasks from '../components/task/Tasks'
 import task from '../components/task/Task'
 import createTask from '../components/task/Create'
@@ -18,28 +19,45 @@ const router = new Router({
             component: home
         },
         {
-            title: 'Tasks',
-            name: 'tasks',
             path: '/tasks',
-            component: tasks
+            component: mainTasks,
+            children: [
+                {
+                    title: 'Tasks',
+                    name: 'tasks',
+                    path: '',
+                    component: tasks
+                },
+                {
+                    name: 'task.create',
+                    path: 'create',
+                    component: createTask
+                },
+                {
+                    name: 'task.show',
+                    path: ':id',
+                    component: task,
+                    props: true
+                }
+            ]
         },
-        {
-            title: 'Tasks',
-            name: 'create-task',
-            path: '/tasks/create',
-            component: createTask
-        },
-        {
-            name: 'task',
-            path: '/tasks/:id',
-            component: task,
-            props: true
-        },
+        // {
+        //     title: 'Tasks',
+        //     name: 'create-task',
+        //     path: '/tasks/create',
+        //     component: createTask
+        // },
+        // {
+        //     name: 'task',
+        //     path: '/tasks/:id',
+        //     component: task,
+        //     props: true
+        // },
         {
             title: 'Not Found',
             name: 'notfound',
             path: '*',
-            component: notfound
+            component: notFound
         }
     ]
 })

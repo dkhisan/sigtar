@@ -14,8 +14,8 @@
                 <span class="fas fa-cog navbar-brand"></span>
             </a>
             <div class="dropdown-menu shadow" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="./settings.html">Settings</a>
-                <a class="dropdown-item" href="./login.html">Log out</a>
+                <a class="dropdown-item">Settings</a>
+                <a class="dropdown-item">Log out</a>
             </div>
         </div>
     </nav>

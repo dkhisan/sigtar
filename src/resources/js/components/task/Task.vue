@@ -5,9 +5,9 @@
                 <div class="card shadow" v-if="response.success">
                     <div class="card-header">
                         {{ task_.name }}
-                        <span class="badge badge-done float-right"
-                            v-if="task_.finished">FINISHED</span>
-                        <span class="badge badge-warning float-right"
+                        <span class="badge badge-success float-right"
+                            v-if="task_.finished == '1'">FINISHED</span>
+                        <span class="badge badge-secondary float-right"
                             v-else>NOT FINISHED</span>
                     </div>
                     <div class="card-body">
@@ -37,8 +37,15 @@
                         </div>
                         <hr>
                         <div class="row justify-content-center task-action">
-                            <button type="button" class="btn btn-outline-primary" @click="showModal">Edit</button>
-                            <button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#remove-task">Remove</button>
+                            <button type="button" class="btn btn-outline-primary" @click="showUpdateModal">Edit</button>
+                            <button type="button" class="btn btn-outline-danger" @click="showDeleteModal">Remove</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="card shadow" v-else-if="response.message">
+                    <div class="card-body">
+                        <div class="alert alert-success">
+                            {{ response.message }}
                         </div>
                     </div>
                 </div>
@@ -47,7 +54,28 @@
                 </div>
             </div>
         </div>
-        <div v-if="isModalActive">
+        <div v-if="isDeleteModalActive">
+            <transition name="modal">
+                <div class="modal-mask">
+                    <div class="modal-wrapper">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <form @submit.prevent="destroy">
+                                    <div class="modal-body">
+                                        <p>Are you sure to remove this task? (This can't be undone)</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button class="btn btn-danger w-50" type="submit">Yes</button>
+                                        <button class="btn btn-secondary w-50" type="button" @click="closeDeleteModal">No</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </transition>
+        </div>
+        <div v-if="isUpdateModalActive">
             <transition name="modal">
                 <div class="modal-mask">
                     <div class="modal-wrapper">
@@ -56,11 +84,15 @@
                                 <form @submit.prevent="submit">
                                     <div class="modal-body">
                                         <div class="row">
-                                            <div class="col-8">
-                                                <div class="alert alert-success" v-if="response.message">{{ response.message }}</div>
-                                                <div class="alert alert-danger" v-for="error in errors">
-                                                    <span v-for="err in error">{{ err }}</span>
+                                            <div class="col-12" v-if="response.message">
+                                                <div class="alert alert-success">{{ response.message }}</div>
+                                            </div>
+                                            <div class="col-12" v-if="errors">
+                                                <div class="alert alert-danger" v-for="(error, idx) in errors" :key="idx">
+                                                    <span v-for="(err, idx) in error" :key="idx">{{ err }}</span>
                                                 </div>
+                                            </div>
+                                            <div class="col-sm-8 col-lg-9">
                                                 <div class="form-group">
                                                     <label for="name">Name</label>
                                                     <div class="input-group">
@@ -74,16 +106,18 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-4">
+                                            <div class="col-sm-4 col-lg-3">
                                                 <div class="form-group">
                                                     <label for="f-yes">Finished</label>
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="finished" id="f-yes" value="1">
-                                                        <label class="form-check-label" for="f-yes">Yes</label>
-                                                    </div>
-                                                    <div class="form-check form-check-inline">
-                                                        <input class="form-check-input" type="radio" name="finished" id="f-no" value="0">
-                                                        <label class="form-check-label" for="f-no">No</label>
+                                                    <div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio" name="finished" id="f-yes" value="1" v-model="task_.finished">
+                                                            <label class="form-check-label" for="f-yes">Yes</label>
+                                                        </div>
+                                                        <div class="form-check form-check-inline">
+                                                            <input class="form-check-input" type="radio" name="finished" id="f-no" value="0" v-model="task_.finished">
+                                                            <label class="form-check-label" for="f-no">No</label>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -133,8 +167,8 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="submit" class="btn btn-primary w-50" @click="closeModal">Save</button>
-                                        <button type="button" class="btn btn-secondary w-50" @click="closeModal">Close</button>
+                                        <button type="submit" class="btn btn-primary w-50">Save</button>
+                                        <button type="button" class="btn btn-secondary w-50" @click="closeUpdateModal">Close</button>
                                     </div>
                                 </form>
                             </div>
@@ -163,7 +197,8 @@
                 },
                 errors: {},
                 task_: {},
-                isModalActive: false
+                isUpdateModalActive: false,
+                isDeleteModalActive: false
             }
         },
 
@@ -203,11 +238,80 @@
                         }
                     })
             },
-            showModal() {
-                this.isModalActive = true
+            showUpdateModal() {
+                this.isUpdateModalActive = true
             },
-            closeModal() {
-                this.isModalActive = false
+            closeUpdateModal() {
+                this.isUpdateModalActive = false
+            },
+            showDeleteModal() {
+                this.isDeleteModalActive = true
+            },
+            closeDeleteModal() {
+                this.isDeleteModalActive = false
+            },
+            destroy() {
+                this.response.success = false
+                this.errors = {}
+
+                axios.delete(`/api/tasks/${this.task_.id}/remove`)
+                    .then(res => {
+                        if (res.status === 204) {
+                            this.response.message = res.statusText
+                        }
+                    })
+                    .catch(err => {
+                        if (err.response) {
+                            this.errors = err.response.data.errors
+                        }
+                        else if (err.request) {
+                            this.errors = err.request.data.errors
+                        }
+                        else {
+                            console.error(err.message)
+                        }
+                    })
+                    .then(() => {
+                        this.isDeleteModalActive = false
+                    })
+            },
+            submit() {
+                /*
+                 * fix datetime to sql format
+                 */
+                let deadlinefixed = this.task_.deadline.replace('T', ' ').concat(':00')
+                this.task_.deadline = deadlinefixed
+
+                /*
+                 * format date for use in 'updated_at' column
+                 */
+                let date  = new Date()
+                let datef = `${date.getFullYear()}-${date.getMonth()}-${date.getDay()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
+
+                this.task_.user_id = 1 // for test only
+                this.task_.updated_at = datef
+
+                this.response.success = false
+                this.errors = {}
+
+                axios.put(`/api/tasks/${this.task_.id}/edit`, this.task_)
+                    .then(res => {
+                        if (res.status === 200) {
+                            this.response.success = true
+                            this.response.message = res.statusText
+                        }
+                    })
+                    .catch(err => {
+                        if (err.response) {
+                            this.errors = err.response.data.errors
+                        }
+                        else if (err.request) {
+                            this.errors = err.request.data.errors
+                        }
+                        else {
+                            console.error(err.message)
+                        }
+                    })
             }
         }
     }

@@ -12,7 +12,7 @@
                             </div>
                             <input type="text" class="form-control shadow" aria-describedby="search-prepend">
                         </div>
-                        <router-link :to="{ name: 'create-task' }" class="btn btn-primary btn-sm mr-2 shadow">New task</router-link>
+                        <router-link :to="{ name: 'task.create' }" class="btn btn-primary btn-sm mr-2 shadow">New task</router-link>
                         <div class="btn-toolbar">
                             <div class="btn-group shadow">
                                 <button type="button" class="btn btn-primary btn-sm" @click.prevent="fetchTasks(pagination.prev_page)" :disabled="!pagination.prev_page">
@@ -42,7 +42,7 @@
                                 </p>
                             </div>
                             <div class="card-footer">
-                                <router-link :to="{name: 'task', params: { id: task.id.toString(), task }}" class="btn btn-outline-primary btn-block shadow-sm">Detail</router-link>
+                                <router-link :to="{name: 'task.show', params: { id: task.id.toString(), task }}" class="btn btn-outline-primary btn-block shadow-sm">Detail</router-link>
                             </div>
                         </div>
                     </div>

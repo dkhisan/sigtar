@@ -11,8 +11,8 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="alert alert-success" v-if="response.success">{{ response.message }}</div>
-                                    <div class="alert alert-danger" v-for="error in errors">
-                                        <span v-for="err in error">{{ err }}</span>
+                                    <div class="alert alert-danger" v-for="(error, idx) in errors" :key="idx">
+                                        <span v-for="(err, idx) in error" :key="idx">{{ err }}</span>
                                     </div>
                                     <div class="form-group">
                                         <label for="name">Name</label>
@@ -85,7 +85,7 @@
 
 <script>
     export default {
-        name: "Create",
+        name: "TaskCreate",
 
         data() {
             return {
