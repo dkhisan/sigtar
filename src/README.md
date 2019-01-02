@@ -7,7 +7,7 @@
 
 ## Vue
 
-### Requisitos
+### Dependências
 
 - `axios`
 - `laravel-mix`

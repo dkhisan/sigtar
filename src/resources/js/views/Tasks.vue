@@ -12,7 +12,7 @@
                             </div>
                             <input type="text" class="form-control shadow" aria-describedby="search-prepend">
                         </div>
-                        <router-link :to="{ name: 'task.create' }" class="btn btn-primary btn-sm mr-2 shadow">New task</router-link>
+                        <router-link :to="{ name: 'tasks.create' }" class="btn btn-primary btn-sm mr-2 shadow">Nova tarefa</router-link>
                         <div class="btn-toolbar">
                             <div class="btn-group shadow">
                                 <button type="button" class="btn btn-primary btn-sm" @click.prevent="fetchTasks(pagination.prev_page)" :disabled="!pagination.prev_page">
@@ -36,13 +36,13 @@
                             <div class="card-body">
                                 <h5 class="card-title">{{ task.name }}</h5>
                                 <p class="card-text">
-                                    Created at<span class="font-weight-bold float-right">{{ task.created_at }}</span><br />
-                                    Finished <span class="font-weight-bold float-right" v-if="task.finished">yes</span>
-                                    <span class="font-weight-bold float-right" v-else>no</span>
+                                    Cadastrada em<span class="font-weight-bold float-right">{{ task.created_at }}</span><br />
+                                    Concluída<span class="font-weight-bold float-right" v-if="task.finished">sim</span>
+                                    <span class="font-weight-bold float-right" v-else>não</span>
                                 </p>
                             </div>
                             <div class="card-footer">
-                                <router-link :to="{name: 'task.show', params: { id: task.id.toString(), task }}" class="btn btn-outline-primary btn-block shadow-sm">Detail</router-link>
+                                <router-link :to="{name: 'task.show', params: { id: task.id.toString(), task }}" class="btn btn-outline-primary btn-block shadow-sm">Detalhes</router-link>
                             </div>
                         </div>
                     </div>
@@ -54,7 +54,6 @@
 
 <script>
     export default {
-        name: 'Tasks',
         data() {
             return {
                 tasks: [],

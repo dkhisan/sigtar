@@ -6,14 +6,14 @@
                     <div class="card-header">
                         {{ task_.name }}
                         <span class="badge badge-success float-right"
-                            v-if="task_.finished == '1'">FINISHED</span>
+                            v-if="task_.finished == '1'">CONCLUíDA</span>
                         <span class="badge badge-secondary float-right"
-                            v-else>NOT FINISHED</span>
+                            v-else>NãO CONCLUíDA</span>
                     </div>
                     <div class="card-body">
                         <div class="row">
                             <div class="col-12">
-                                <p class="h6">Description</p>
+                                <p class="h6">Descrição</p>
                                 <div class="section-comment">
                                     <p class="text-justify">{{ task_.description }}</p>
                                 </div>
@@ -21,24 +21,24 @@
                         </div>
                         <div class="row">
                             <div class="col-6">
-                                <p>Deadline<span class="font-weight-bold float-right">{{ task_.deadline }}</span></p>
+                                <p>Data limite<span class="font-weight-bold float-right">{{ task_.deadline }}</span></p>
                             </div>
                             <div class="col-6">
-                                <p>Priority<span class="font-weight-bold float-right">{{ task_.priority }}</span></p>
+                                <p>Prioridade<span class="font-weight-bold float-right">{{ task_.priority }}</span></p>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-6">
-                                <p>Created at<span class="font-weight-bold float-right">{{ task_.created_at }}</span></p>
+                                <p>Cadastrada em<span class="font-weight-bold float-right">{{ task_.created_at }}</span></p>
                             </div>
                             <div class="col-6">
-                                <p>Updated at<span class="font-weight-bold float-right">{{ task_.created_at }}</span></p>
+                                <p>Atualizada em<span class="font-weight-bold float-right">{{ task_.created_at }}</span></p>
                             </div>
                         </div>
                         <hr>
                         <div class="row justify-content-center task-action">
-                            <button type="button" class="btn btn-outline-primary" @click="showUpdateModal">Edit</button>
-                            <button type="button" class="btn btn-outline-danger" @click="showDeleteModal">Remove</button>
+                            <button type="button" class="btn btn-outline-primary" @click="showUpdateModal">Editar</button>
+                            <button type="button" class="btn btn-outline-danger" @click="showDeleteModal">Apagar</button>
                         </div>
                     </div>
                 </div>
@@ -62,11 +62,11 @@
                             <div class="modal-content">
                                 <form @submit.prevent="destroy">
                                     <div class="modal-body">
-                                        <p>Are you sure to remove this task? (This can't be undone)</p>
+                                        <p>Tem certeza que quer fazer isso? (Isso não pode ser desfeito)</p>
                                     </div>
                                     <div class="modal-footer">
-                                        <button class="btn btn-danger w-50" type="submit">Yes</button>
-                                        <button class="btn btn-secondary w-50" type="button" @click="closeDeleteModal">No</button>
+                                        <button class="btn btn-danger w-50" type="submit">Sim</button>
+                                        <button class="btn btn-secondary w-50" type="button" @click="closeDeleteModal">Não</button>
                                     </div>
                                 </form>
                             </div>
@@ -160,6 +160,7 @@
                                                             <option value="low">Low</option>
                                                             <option value="medium">Medium</option>
                                                             <option value="high">High</option>
+                                                            <option value="very_high">Very High</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -182,7 +183,6 @@
 
 <script>
     export default {
-        name: 'Task',
         props: {
             id: String,
             task: Object
@@ -267,9 +267,6 @@
                         else if (err.request) {
                             this.errors = err.request.data.errors
                         }
-                        else {
-                            console.error(err.message)
-                        }
                     })
                     .then(() => {
                         this.isDeleteModalActive = false
@@ -307,9 +304,6 @@
                         }
                         else if (err.request) {
                             this.errors = err.request.data.errors
-                        }
-                        else {
-                            console.error(err.message)
                         }
                     })
             }

@@ -23,10 +23,11 @@
     </head>
     <body>
         <div id="app">
-            <navbar-component></navbar-component>
-            <router-view></router-view>
+            <navbar></navbar>
+            <router-view ></router-view>
         </div>
 
         <script src="{{ asset('js/app.js') }}"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     </body>
 </html>

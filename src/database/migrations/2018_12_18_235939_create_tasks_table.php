@@ -23,7 +23,7 @@ class CreateTasksTable extends Migration
             $table->string('name');
             $table->text('description');
             $table->dateTime('deadline');
-            $table->enum('priority', ['low', 'medium', 'high'])
+            $table->enum('priority', ['low', 'medium', 'high', 'very_high'])
                 ->default('low');
             $table->boolean('finished')
                 ->default(false)

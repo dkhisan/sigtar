@@ -13,7 +13,10 @@ class TaskController extends Controller
      */
     public function index()
     {
-        $tasks = Task::orderBy('deadline', 'asc')->paginate(6);
+        $user = auth()->user();
+        $tasks = Task::orderBy('deadline', 'asc')
+            ->where('user_id', $user->id)
+            ->paginate(6);
         return response()->json($tasks, 200);
     }
 
@@ -22,7 +25,9 @@ class TaskController extends Controller
      */
     public function show($id)
     {
-        $task = Task::findOrFail($id);
+        $user = auth()->user();
+        $task = Task::findOrFail($id)
+            ->where('user_id', $user->id);
         return response()->json($task, 200);
     }
 
@@ -44,9 +49,11 @@ class TaskController extends Controller
     /**
      * update a existing record in tasks table, return code 200 means 'ok'
      */
-    public function update(Request $request, $id)
+    public function edit(Request $request, $id)
     {
-        $task = Task::findOrFail($id);
+        $user = auth()->user();
+        $task = Task::findOrFail($id)
+            ->where('user_id', $user->id);
         $task->update($request->all());
 
         return response()->json($task, 200);
@@ -57,7 +64,9 @@ class TaskController extends Controller
      */
     public function destroy($id)
     {
-        $task = Task::findOrFail($id);
+        $user = auth()->user();
+        $task = Task::findOrFail($id)
+            ->where('user_id', $user->id);
         $task->delete();
 
         return response()->json(null,204);

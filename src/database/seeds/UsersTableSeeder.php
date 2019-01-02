@@ -3,6 +3,8 @@
 use Illuminate\Database\Seeder;
 use App\User;
 
+use Illuminate\Support\Facades\Hash;
+
 class UsersTableSeeder extends Seeder
 {
     /**
@@ -17,10 +19,14 @@ class UsersTableSeeder extends Seeder
          */
         //User::truncate();
 
+        $faker = \Faker\Factory::create();
+        $phash = Hash::make('12345');
+
         User::create([
             'name' => 'John Doe',
-            'username' => 'john_test',
-            'password' => bcrypt(str_random(6))
+            'username' => 'test.john',
+            'password' => $phash,
+            'email' => $faker->email
         ]);
     }
 }

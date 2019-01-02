@@ -13,19 +13,23 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="name">Nome completo</label>
-                                        <input type="text" class="form-control" name="name" id="name" required v-bind:class="{ 'is-invalid': errors.name }" v-model="user.name">
+                                        <input type="text" class="form-control" name="name" id="name" required :class="{ 'is-invalid': errors.name }" v-model="user.name">
                                     </div>
                                     <div class="form-group">
                                         <label for="username">Usuário</label>
-                                        <input type="text" class="form-control" name="username" id="username" required v-bind:class="{ 'is-invalid': errors.username }" v-model="user.username">
+                                        <input type="text" class="form-control" name="username" id="username" required :class="{ 'is-invalid': errors.username }" v-model="user.username">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="username">E-mail</label>
+                                        <input type="text" class="form-control" name="email" id="email" required :class="{ 'is-invalid': errors.username }" v-model="user.email">
                                     </div>
                                     <div class="form-group">
                                         <label for="password">Senha</label>
-                                        <input type="password" maxlength="20" class="form-control" name="password" id="password" required v-bind:class="{ 'is-invalid': errors.password }" v-model="user.password">
+                                        <input type="password" maxlength="20" class="form-control" name="password" id="password" required :class="{ 'is-invalid': errors.password }" v-model="user.password">
                                     </div>
                                     <div class="form-group">
-                                        <label for="r-password">Repetir senha</label>
-                                        <input type="password" maxlength="20" class="form-control" name="r-password" id="r-password" required v-bind:class="{ 'is-invalid': errors.password }" v-model="password">
+                                        <label for="password_retype">Repetir senha</label>
+                                        <input type="password" maxlength="20" class="form-control" name="password_retype" id="password_retype" required :class="{ 'is-invalid': errors.password }" v-model="user.password_retype">
                                     </div>
                                 </div>
                             </div>
@@ -42,15 +46,19 @@
 
 <script>
 export default {
-    name: 'UserCreate',
     data() {
         return {
-            nameLength: Number = 255,
-            length: Number = 20,
-            user: {},
+            nameLength: 255,
+            length: 20,
+            user: {
+                name: '',
+                username: '',
+                password: '',
+                password_retype: '',
+                email: ''
+            },
             errors: {},
-            response: {},
-            password: ''
+            response: {}
         }
     },
 
@@ -65,28 +73,30 @@ export default {
                 if (this.user.username.length > this.length) {
                     this.errors.username = [`O nome de usuário não pode ter mais que ${this.nameLength} caractéres`]
                 }
-                if (this.user.password !== this.password) {
+                if (this.user.password !== this.user.password_retype) {
                     this.errors.password = ['As senhas não coincidem']
                 }
                 if (this.user.password.length > this.length) {
                     this.errors.password = [`A senha deve ter no máximo ${this.length} caractéres`]
                 }
+                if (this.user.email.length > this.nameLength) {
+                    this.errors.email = [`O nome de usuário não pode ter mais que ${this.nameLength} caractéres`]
+                }
             }
 
             if (_.isEmpty(this.errors)) {
-                this.submit()
+                this.register()
             }
         },
-        submit() {
+        register() {
             this.response.success = false
 
-            axios.post('/api/users/create', this.user)
+            axios.post('/api/register', this.user)
                 .then(res => {
                     if (res.status === 201) {
                         this.response.success = true
                         this.response.message = res.statusText
                     }
-                    this.user = {}
                 })
                 .catch(err => {
                     if (err.response) {
@@ -94,9 +104,6 @@ export default {
                     }
                     else if (err.request) {
                         this.errors = err.request.data.errors
-                    }
-                    else {
-                        console.log(err.message)
                     }
                 })
         }

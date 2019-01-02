@@ -12,23 +12,34 @@ class UserController extends Controller
     /*
      * insert a new user in db
      */
-    public function store(Request $request)
+    public function register(Request $request)
     {
         Validator::make($request->all(), [
             'name' => 'required|max:255',
             'username' => 'required|unique:users|max:255',
-            'password' => 'required|max:20'
+            'password' => 'required|max:20',
+            'email' => 'required|unique:users|max:255'
         ])->validate();
 
-        $hashed = Hash::make(trim($request->password));
+        $phash = Hash::make(trim($request->password));
+
         $user = [
             'name' => trim($request->name),
             'username' => trim(strtolower($request->username)),
-            'password' => bcrypt($hashed),
+            'password' => $phash,
+            'email' => trim($request->email),
             'active' => true
         ];
 
         $userCreated = User::firstOrCreate($user);
+
         return response()->json($userCreated, 201);
+    }
+
+    public function get()
+    {
+        $response = auth()->user();
+
+        return response()->json($response, 200);
     }
 }

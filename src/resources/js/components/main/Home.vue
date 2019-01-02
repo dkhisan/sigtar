@@ -15,7 +15,5 @@
 </template>
 
 <script>
-    export default {
-        name: "Home"
-    }
+    export default {}
 </script>

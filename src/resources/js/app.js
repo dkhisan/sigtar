@@ -1,33 +1,14 @@
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
-
 import router from './http/router'
+import Auth from './http/auth'
+import API from './http/api'
 
 require('./bootstrap');
 
 window.Vue = require('vue');
-window.axios = require('axios');
-window._ = require('lodash');
+window.api = new API();
+window.auth = new Auth();
 
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- */
-
-Vue.component('navbar-component', require('./components/main/Navbar.vue').default);
-
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key)))
-
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
+Vue.component('navbar', require('./components/main/Navbar').default);
 
 const app = new Vue({
     el: '#app',

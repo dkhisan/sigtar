@@ -1,60 +1,94 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import home from '../components/main/Home'
-import userRegister from '../components/user/Register'
-import notFound from '../components/main/NotFound'
-import mainTasks from '../components/task/Main'
-import tasks from '../components/task/Tasks'
-import task from '../components/task/Task'
-import createTask from '../components/task/Create'
+/*
+ * rotas de livre acesso (auth)
+ */
+const Home = () => import('../components/main/Home')
+const UserRegister = () => import('../views/UserRegister')
+const UserLogin = () => import('../views/UserLogin')
+const NotFound = () => import('../components/main/NotFound')
+
+/*
+ * rotas protegidas
+ */
+const Main = () => import('../task/Main')
+const TaskView = () => import('../views/Task')
+const TasksView = () => import('../views/Tasks')
+const TaskCreateView = () => import('../views/TaskCreate')
 
 Vue.use(Router)
 
+// TODO: integração OAuth
 const router = new Router({
+    mode: 'history',
     routes: [
         {
             title: 'Home',
             name: 'home',
             path: '/',
-            component: home
+            meta: { auth: false },
+            component: Home
         },
         {
-            path: '/tasks',
-            component: mainTasks,
-            children: [
-                {
-                    title: 'Tasks',
-                    name: 'tasks',
-                    path: '',
-                    component: tasks
-                },
-                {
-                    name: 'task.create',
-                    path: 'create',
-                    component: createTask
-                },
-                {
-                    name: 'task.show',
-                    path: ':id',
-                    component: task,
-                    props: true
-                }
-            ]
+            title: 'Login',
+            name: 'login',
+            path: '/login',
+            component: UserLogin
         },
+        {
+            title: 'Tarefas',
+            path: '/tasks',
+            meta: { auth: true },
+            component: Main,
+            children: [
+            {
+                name: 'tasks.index',
+                path: '',
+                component: TasksView
+            },
+            {
+                name: 'tasks.create',
+                path: 'create',
+                component: TaskCreateView
+            },
+            {
+                name: 'task.show',
+                path: ':id',
+                props: true,
+                component: TaskView
+            },
+        ]},
         {
             title: 'Cadastro de usuário',
-            name: 'user.register',
+            name: 'users.register',
             path: '/register',
-            component: userRegister
+            meta: { auth: false },
+            component: UserRegister
         },
         {
-            title: 'Not Found',
+            title: 'Não encontrado',
             name: 'notfound',
             path: '*',
-            component: notFound
+            meta: { auth: false },
+            component: NotFound
         }
     ]
+})
+
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(record => record.meta.auth)) {
+        if (!auth.isAuthenticated()) {
+            next({
+                path: '/login',
+                query: { redirect: to.fullPath }
+            })
+
+            return
+        }
+    }
+
+    next()
 })
 
 export default router

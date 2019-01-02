@@ -4,7 +4,7 @@
             <div class="col-lg-6">
                 <div class="card shadow mb-3">
                     <div class="card-header">
-                        CREATE A NEW TASK
+                        CRIANDO UMA NOVA TAREFA
                     </div>
                     <form @submit.prevent="submit">
                         <div class="card-body">
@@ -15,7 +15,7 @@
                                         <span v-for="(err, idx) in error" :key="idx">{{ err }}</span>
                                     </div>
                                     <div class="form-group">
-                                        <label for="name">Name</label>
+                                        <label for="name">Nome</label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
                                                 <div class="input-group-text">
@@ -31,7 +31,7 @@
                             <div class="row">
                                 <div class="col-12">
                                     <div class="form-group">
-                                        <label for="description">Description</label>
+                                        <label for="description">Descrição</label>
                                         <textarea class="form-control" name="description" id="description" rows="4" required
                                                   v-bind:class="{ 'is-invalid': errors.description }" v-model="task.description"></textarea>
                                     </div>
@@ -40,7 +40,7 @@
                             <div class="row">
                                 <div class="col-6">
                                     <div class="form-group">
-                                        <label for="deadline">Deadline</label>
+                                        <label for="deadline">Data limite</label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
                                                 <div class="input-group-text">
@@ -54,7 +54,7 @@
                                 </div>
                                 <div class="col-6">
                                     <div class="form-group">
-                                        <label for="priority">Priority</label>
+                                        <label for="priority">Prioridade</label>
                                         <div class="input-group">
                                             <div class="input-group-prepend">
                                                 <div class="input-group-text">
@@ -63,9 +63,10 @@
                                             </div>
                                             <select name="priority" id="priority" class="form-control" required
                                                     v-bind:class="{ 'is-invalid': errors.priority }" v-model="task.priority">
-                                                <option value="low">Low</option>
-                                                <option value="medium">Medium</option>
-                                                <option value="high">High</option>
+                                                <option value="low">Baixa</option>
+                                                <option value="medium">Média</option>
+                                                <option value="high">Alta</option>
+                                                <option value="very_high">Muito Alta</option>
                                             </select>
                                         </div>
                                     </div>
@@ -73,7 +74,7 @@
                             </div>
                             <hr>
                             <div class="row justify-content-center">
-                                <button type="submit" class="btn btn-primary" style="min-width: 100px">Create</button>
+                                <button type="submit" class="btn btn-primary" style="min-width: 100px">Enviar</button>
                             </div>
                         </div>
                     </form>
@@ -85,8 +86,6 @@
 
 <script>
     export default {
-        name: "TaskCreate",
-
         data() {
             return {
                 response: {
@@ -106,7 +105,9 @@
                 let deadlinefixed = this.task.deadline.replace('T', ' ').concat(':00')
                 this.task.deadline = deadlinefixed
 
-                this.task.user_id = 1
+                let user = JSON.parse(window.localStorage.getItem('user'))
+
+                this.task.user_id = user.id
 
                 this.response.success = false
                 this.errors = {}
@@ -125,9 +126,6 @@
                         }
                         else if (err.request) {
                             this.errors = err.request.data.errors
-                        }
-                        else {
-                            console.log(err.message)
                         }
                     })
             }
