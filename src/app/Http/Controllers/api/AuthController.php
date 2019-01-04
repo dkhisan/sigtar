@@ -25,18 +25,17 @@ class AuthController extends Controller
             ->where([
                 ['username', $username],
                 ['active', true]
-            ])
-            ->first();
+            ])->first();
 
         if (!$result) {
             return response()->json([
-                'errors' => ['User not found or not active.']
+                'errors' => ['Usuário não foi encontrado ou não está ativo.']
             ], 422);
         }
 
         if (!Hash::check($password, $result->password)) {
             return response()->json([
-                'errors' => ['Wrong password, try again.']
+                'errors' => ['Senha incorreta, tente novamente.']
             ], 422);
         }
 

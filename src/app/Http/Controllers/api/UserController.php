@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\api;
 
 use App\User;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -33,7 +34,7 @@ class UserController extends Controller
 
         $userCreated = User::firstOrCreate($user);
 
-        return response()->json($userCreated, 201);
+        return response()->json(['message' => 'Cadastro realizado.', 'user' => $userCreated], 201);
     }
 
     public function get()

@@ -29,16 +29,16 @@ Route::middleware('auth:api')->group(function () {
      * group 'tasks'
      */
     Route::prefix('tasks')->group(function () {
-        Route::get('/', 'TaskController@index');
-        Route::get('{id}', 'TaskController@show');
-        Route::post('create', 'TaskController@store');
-        Route::patch('{id}/edit', 'TaskController@edit');
-        Route::delete('{id}/remove', 'TaskController@destroy');
+        Route::get('/', 'api\TaskController@index');
+        Route::get('{id}', 'api\TaskController@show');
+        Route::post('create', 'api\TaskController@store');
+        Route::patch('{id}/edit', 'api\TaskController@edit');
+        Route::delete('{id}/remove', 'api\TaskController@destroy');
     });
 });
 
 /*
  * free route
  */
-Route::post('register', 'UserController@register');
+Route::post('register', 'api\UserController@register');
 Route::post('login', 'api\AuthController@login')->name('login');

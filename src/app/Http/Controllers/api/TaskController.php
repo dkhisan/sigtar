@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\api;
 
 use App\Task;
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -17,6 +18,14 @@ class TaskController extends Controller
         $tasks = Task::orderBy('deadline', 'asc')
             ->where('user_id', $user->id)
             ->paginate(6);
+
+        if (!$tasks) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Sem resultados.'
+            ], 200);
+        }
+
         return response()->json($tasks, 200);
     }
 
@@ -26,8 +35,18 @@ class TaskController extends Controller
     public function show($id)
     {
         $user = auth()->user();
-        $task = Task::findOrFail($id)
-            ->where('user_id', $user->id);
+        $task = Task::where([
+            ['id', $id],
+            ['user_id', $user->id]
+        ])->first();
+
+        if (!$task) {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Sem resultados.'
+            ], 200);
+        }
+
         return response()->json($task, 200);
     }
 
@@ -43,7 +62,7 @@ class TaskController extends Controller
         ])->validate();
 
         $task = Task::firstOrCreate($request->all());
-        return response()->json($task, 201);
+        return response()->json([$task, $request], 201);
     }
 
     /**
@@ -52,11 +71,21 @@ class TaskController extends Controller
     public function edit(Request $request, $id)
     {
         $user = auth()->user();
-        $task = Task::findOrFail($id)
-            ->where('user_id', $user->id);
+        $task = Task::where([
+            ['id', $id],
+            ['user_id', $user->id]
+        ])->first();
+
+        if (!$task) {
+            return response()->json([
+                'status' => 422,
+                'message' => 'Erro ao processar, está certo que todas as informações estão corretas?'
+            ], 200);
+        }
+
         $task->update($request->all());
 
-        return response()->json($task, 200);
+        return response()->json(['message' => 'Gravado.'], 200);
     }
 
     /**
@@ -65,10 +94,20 @@ class TaskController extends Controller
     public function destroy($id)
     {
         $user = auth()->user();
-        $task = Task::findOrFail($id)
-            ->where('user_id', $user->id);
+        $task = Task::where([
+            ['id', $id],
+            ['user_id', $user->id]
+        ]);
+
+        if (!$task) {
+            return response()->json([
+                'status' => 422,
+                'message' => 'Erro ao processar, está certo que todas as informações estão corretas?'
+            ], 200);
+        }
+
         $task->delete();
 
-        return response()->json(null,204);
+        return response()->json(['message' => 'Registro removido.'],204);
     }
 }

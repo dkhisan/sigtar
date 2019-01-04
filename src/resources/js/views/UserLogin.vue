@@ -44,12 +44,6 @@
                 errors: {}
             }
         },
-        mounted: function () {
-            // let redirect = window.localStorage.getItem('redirect') || null
-            //
-            // if (redirect !== null)
-            //     this.$router.push(redirect)
-        },
         methods: {
             validate() {
                 this.errors = {}
@@ -74,13 +68,13 @@
                 }
             },
             login() {
-                axios.post('/api/login', this.user)
+                let vm = this
+                _api.call('post', '/api/login', this.user)
                     .then(res => {
-                        if (res.status === 200) {
-                            // window.localStorage.setItem('redirect', this.$route.path)
-
-                            auth.login(res.data.token, res.data.user)
-                        }
+                        _auth.login({ 'token': res.data.token, 'user': res.data.user })
+                    })
+                    .then(() => {
+                        vm.$router.replace(vm.$route.query.redirect || '/')
                     })
                     .catch(err => {
                         if (err.response) {

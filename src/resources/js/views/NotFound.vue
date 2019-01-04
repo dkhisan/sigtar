@@ -6,7 +6,7 @@
                     <div class="card-body">
                         <h5 class="card-title">404 NOT FOUND</h5>
                         <p class="card-text text-justify">
-                            A página que vc procura não foi encontrada :(
+                            A página <code>{{ this.$route.path }}</code> não foi encontrada, verifique e tente novamente :(
                         </p>
                     </div>
                 </div>
@@ -16,7 +16,5 @@
 </template>
 
 <script>
-    export default {
-        name: "NotFound"
-    }
+    export default {}
 </script>

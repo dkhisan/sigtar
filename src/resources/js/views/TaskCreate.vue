@@ -32,7 +32,7 @@
                                 <div class="col-12">
                                     <div class="form-group">
                                         <label for="description">Descrição</label>
-                                        <textarea class="form-control" name="description" id="description" rows="4" required
+                                        <textarea class="form-control" name="description" id="description" rows="4" maxlength="500" required
                                                   v-bind:class="{ 'is-invalid': errors.description }" v-model="task.description"></textarea>
                                     </div>
                                 </div>
@@ -105,14 +105,14 @@
                 let deadlinefixed = this.task.deadline.replace('T', ' ').concat(':00')
                 this.task.deadline = deadlinefixed
 
-                let user = JSON.parse(window.localStorage.getItem('user'))
+                let user = _auth.user
 
                 this.task.user_id = user.id
 
                 this.response.success = false
                 this.errors = {}
 
-                axios.post('/api/tasks/create', this.task)
+                _api.call('post', '/api/tasks/create', this.task)
                     .then(res => {
                         if (res.status === 201) {
                             this.response.success = true

@@ -1,44 +1,61 @@
 class Auth {
     constructor() {
-        this.token =            window.localStorage.getItem('token') || null
-        this.user  = JSON.parse(window.localStorage.getItem('user')) || null
+        this.token  =            window.localStorage.getItem('token')  || null
+        this.user_  = JSON.parse(window.localStorage.getItem('user'))  || null
+        this.logged =            window.localStorage.getItem('logged') || false
 
         if (this.token) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
         }
     }
 
-    login(token, user) {
-        window.localStorage.setItem('token', token)
-        window.localStorage.setItem('user', JSON.stringify(user))
+    login(store) {
+        window.localStorage.setItem('token', store.token)
+        window.localStorage.setItem('user', JSON.stringify(store.user))
+        window.localStorage.setItem('logged', true)
 
-        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+        axios.defaults.headers.common['Authorization'] = `Bearer ${store.token}`
 
-        this.token =            token
-        this.user  = JSON.parse(user)
+        this.token  = store.token
+        this.user_   = store.user
+        this.logged = true
     }
 
     logout() {
-        api.call('post', '/api/users/logout')
-
         window.localStorage.removeItem('token')
         window.localStorage.removeItem('user')
-
-        this.token = null
-        this.user  = null
+        window.localStorage.removeItem('logged')
 
         axios.defaults.headers.common['Authorization'] = null
+
+        this.token  = null
+        this.user_   = null
+        this.logged = false
     }
 
+    /*
+     * verify if user is authenticated with a query
+     */
     verify() {
-        api.call('get', '/api/users/get')
+        _api.call('get', '/api/users/get')
             .then(res => {
-                this.user = res.data.user
+                this.user_ = res.data.user
             })
     }
 
+    /*
+     * verify if user is properly authenticated with a token
+     */
     isAuthenticated() {
-        return !! this.token
+        return this.logged && !!this.token
+    }
+
+    get userId() {
+        return this.user_.id
+    }
+
+    get user() {
+        return this.user_
     }
 }
 

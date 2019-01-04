@@ -91,11 +91,11 @@ export default {
         register() {
             this.response.success = false
 
-            axios.post('/api/register', this.user)
+            _api.call('post', '/api/register', this.user)
                 .then(res => {
                     if (res.status === 201) {
                         this.response.success = true
-                        this.response.message = res.statusText
+                        this.response.message = res.data.message
                     }
                 })
                 .catch(err => {

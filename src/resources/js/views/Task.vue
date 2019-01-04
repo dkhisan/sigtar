@@ -94,7 +94,7 @@
                                             </div>
                                             <div class="col-sm-8 col-lg-9">
                                                 <div class="form-group">
-                                                    <label for="name">Name</label>
+                                                    <label for="name">Nome</label>
                                                     <div class="input-group">
                                                         <div class="input-group-prepend">
                                                             <div class="input-group-text">
@@ -108,15 +108,15 @@
                                             </div>
                                             <div class="col-sm-4 col-lg-3">
                                                 <div class="form-group">
-                                                    <label for="f-yes">Finished</label>
+                                                    <label for="f-yes">Concluída</label>
                                                     <div>
                                                         <div class="form-check form-check-inline">
                                                             <input class="form-check-input" type="radio" name="finished" id="f-yes" value="1" v-model="task_.finished">
-                                                            <label class="form-check-label" for="f-yes">Yes</label>
+                                                            <label class="form-check-label" for="f-yes">Sim</label>
                                                         </div>
                                                         <div class="form-check form-check-inline">
                                                             <input class="form-check-input" type="radio" name="finished" id="f-no" value="0" v-model="task_.finished">
-                                                            <label class="form-check-label" for="f-no">No</label>
+                                                            <label class="form-check-label" for="f-no">Não</label>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -125,7 +125,7 @@
                                         <div class="row">
                                             <div class="col-12">
                                                 <div class="form-group">
-                                                    <label for="description">Description</label>
+                                                    <label for="description">Descrição</label>
                                                     <textarea class="form-control" name="description" id="description" rows="4" required
                                                               v-bind:class="{ 'is-invalid': errors.description }" v-model="task_.description"></textarea>
                                                 </div>
@@ -134,7 +134,7 @@
                                         <div class="row">
                                             <div class="col-6">
                                                 <div class="form-group">
-                                                    <label for="deadline">Deadline</label>
+                                                    <label for="deadline">Data limite</label>
                                                     <div class="input-group">
                                                         <div class="input-group-prepend">
                                                             <div class="input-group-text">
@@ -148,7 +148,7 @@
                                             </div>
                                             <div class="col-6">
                                                 <div class="form-group">
-                                                    <label for="priority">Priority</label>
+                                                    <label for="priority">Prioridade</label>
                                                     <div class="input-group">
                                                         <div class="input-group-prepend">
                                                             <div class="input-group-text">
@@ -157,10 +157,10 @@
                                                         </div>
                                                         <select name="priority" id="priority" class="form-control" required
                                                                 v-bind:class="{ 'is-invalid': errors.priority }" v-model="task_.priority">
-                                                            <option value="low">Low</option>
-                                                            <option value="medium">Medium</option>
-                                                            <option value="high">High</option>
-                                                            <option value="very_high">Very High</option>
+                                                            <option value="low">Baixa</option>
+                                                            <option value="medium">Média</option>
+                                                            <option value="high">Alta</option>
+                                                            <option value="very_high">Muito Alta</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -168,8 +168,8 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="submit" class="btn btn-primary w-50">Save</button>
-                                        <button type="button" class="btn btn-secondary w-50" @click="closeUpdateModal">Close</button>
+                                        <button type="submit" class="btn btn-primary w-50">Gravar</button>
+                                        <button type="button" class="btn btn-secondary w-50" @click="closeUpdateModal">Fechar</button>
                                     </div>
                                 </form>
                             </div>
@@ -217,24 +217,26 @@
                 this.response.success = false
                 this.response.error = ''
 
-                axios.get(`/api/tasks/${task}`)
+                _api.call('get', `/api/tasks/${task}`)
                     .then(res => {
                         if (res.status === 200) {
-                            this.task_ = res.data
-                            this.response.success = true
+                            if (res.data.status !== 404) {
+                                this.task_ = res.data
+                                this.response.success = true
+                            }
+                            else {
+                                this.response.error = res.data.message
+                            }
                         }
                     })
                     .catch(err => {
                         if (err.response) {
-                            this.response.status = err.response.status
+                            this.response.status = err.response.data.status
                             this.response.error = err.response.data.error
                         }
                         else if (err.request) {
-                            this.request.status = err.request.status
+                            this.request.status = err.request.data.status
                             this.response.error = err.request.data.error
-                        }
-                        else {
-                            console.error(err.message)
                         }
                     })
             },
@@ -254,10 +256,16 @@
                 this.response.success = false
                 this.errors = {}
 
-                axios.delete(`/api/tasks/${this.task_.id}/remove`)
+                _api.call('delete', `/api/tasks/${this.task_.id}/remove`)
                     .then(res => {
-                        if (res.status === 204) {
-                            this.response.message = res.statusText
+                        if (res.status === 200) {
+                            if (res.data.status === 422) {
+                                this.response.error = res.data.message
+                            }
+                        }
+                        else if (res.status === 204) {
+                            this.response.success = true
+                            this.response.message = res.data.message
                         }
                     })
                     .catch(err => {
@@ -268,9 +276,9 @@
                             this.errors = err.request.data.errors
                         }
                     })
-                    .then(() => {
-                        this.isDeleteModalActive = false
-                    })
+                .then(() => {
+                    this.isDeleteModalActive = false
+                })
             },
             submit() {
                 /*
@@ -285,17 +293,23 @@
                 let date  = new Date()
                 let datef = `${date.getFullYear()}-${date.getMonth()}-${date.getDay()} ${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`
 
-                this.task_.user_id = 1 // for test only
+                let user = _auth.user
+                this.task_.user_id = user.id
                 this.task_.updated_at = datef
 
                 this.response.success = false
                 this.errors = {}
 
-                axios.put(`/api/tasks/${this.task_.id}/edit`, this.task_)
+                _api.call('patch', `/api/tasks/${this.task_.id}/edit`, this.task_)
                     .then(res => {
                         if (res.status === 200) {
-                            this.response.success = true
-                            this.response.message = res.statusText
+                            if (res.data.status !== 422) {
+                                this.response.success = true
+                                this.response.message = res.data.message
+                            }
+                            else {
+                                this.response.error = res.data.message
+                            }
                         }
                     })
                     .catch(err => {

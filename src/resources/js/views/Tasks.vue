@@ -18,7 +18,7 @@
                                 <button type="button" class="btn btn-primary btn-sm" @click.prevent="fetchTasks(pagination.prev_page)" :disabled="!pagination.prev_page">
                                     <span class="fas fa-angle-left"></span>
                                 </button>
-                                <button type="button" class="btn btn-primary btn-sm" disabled>{{ pagination.current_page }} of {{ pagination.last_page }}</button>
+                                <button type="button" class="btn btn-primary btn-sm" disabled>{{ pagination.current_page }} de {{ pagination.last_page }}</button>
                                 <button type="button" class="btn btn-primary btn-sm" @click.prevent="fetchTasks(pagination.next_page)" :disabled="!pagination.next_page">
                                     <span class="fas fa-angle-right"></span>
                                 </button>
@@ -30,8 +30,17 @@
         </div>
         <div class="container-fluid">
             <div class="col-lg-12">
+                <div class="row justify-content-center" v-if="noTasks">
+                    <div class="col-lg-6 mb-3">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <p class="card-text">Sem resultados.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="row">
-                    <div class="col-lg-4 mb-3"  v-for="task in tasks" v-bind:key="task.id">
+                    <div class="col-lg-4 mb-3" v-for="task in tasks" v-bind:key="task.id">
                         <div class="card shadow">
                             <div class="card-body">
                                 <h5 class="card-title">{{ task.name }}</h5>
@@ -56,6 +65,7 @@
     export default {
         data() {
             return {
+                noTasks: false,
                 tasks: [],
                 task: {
                     id: '',
@@ -80,7 +90,7 @@
             fetchTasks(page) {
                 let vm = this
                 page = page || '/api/tasks'
-                axios.get(page)
+                _api.call('get', page)
                     .then(res => {
                         this.tasks = res.data.data
                         let meta = {
@@ -91,11 +101,11 @@
                             next_page: res.data.next_page_url,
                             prev_page: res.data.prev_page_url
                         }
+                        this.noTasks = res.data.total === 0
                         vm.makePagination(meta, links)
                     })
                     .catch(err => console.log(err))
             },
-
             makePagination(meta, links) {
                 let next
                 let prev
