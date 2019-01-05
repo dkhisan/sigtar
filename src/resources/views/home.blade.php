@@ -16,15 +16,12 @@
         <!-- Google Font -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic" />
 
-        <!-- Custom CSS -->
-        <link rel="stylesheet" href="{{ asset('css/style.css') }}" />
-
         <title>Sistema de Tarefas</title>
     </head>
     <body>
         <div id="app">
             <navbar></navbar>
-            <router-view ></router-view>
+            <app></app>
         </div>
 
         <script src="{{ asset('js/app.js') }}"></script>

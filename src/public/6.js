@@ -9,6 +9,11 @@
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; var ownKeys = Object.keys(source); if (typeof Object.getOwnPropertySymbols === 'function') { ownKeys = ownKeys.concat(Object.getOwnPropertySymbols(source).filter(function (sym) { return Object.getOwnPropertyDescriptor(source, sym).enumerable; })); } ownKeys.forEach(function (key) { _defineProperty(target, key, source[key]); }); } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -42,7 +47,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
+  props: {
+    message: String
+  },
   data: function data() {
     return {
       uname: 255,
@@ -51,10 +63,16 @@ __webpack_require__.r(__webpack_exports__);
         username: '',
         password: ''
       },
-      errors: {}
+      errors: '',
+      message_: ''
     };
   },
-  methods: {
+  created: function created() {
+    if (this.message) {
+      this.message_ = this.message;
+    }
+  },
+  methods: _objectSpread({
     validate: function validate() {
       this.errors = {};
 
@@ -83,15 +101,21 @@ __webpack_require__.r(__webpack_exports__);
     login: function login() {
       var _this = this;
 
-      var vm = this;
-
       _api.call('post', '/api/login', this.user).then(function (res) {
         _auth.login({
           'token': res.data.token,
           'user': res.data.user
         });
-      }).then(function () {
-        vm.$router.replace(vm.$route.query.redirect || '/');
+
+        _this.newSession({
+          'session': {
+            'token': res.data.token,
+            'loggedIn': true
+          },
+          'user': res.data.user
+        }).then(function () {
+          _this.$router.replace(_this.$route.query.redirect || '/');
+        });
       }).catch(function (err) {
         if (err.response) {
           _this.errors = err.response.data.errors;
@@ -100,7 +124,7 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     }
-  }
+  }, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(['newSession']))
 });
 
 /***/ }),
@@ -141,6 +165,12 @@ var render = function() {
                     "div",
                     { staticClass: "col-12" },
                     [
+                      _vm.message_
+                        ? _c("div", { staticClass: "alert alert-info" }, [
+                            _c("span", [_vm._v(_vm._s(_vm.message_))])
+                          ])
+                        : _vm._e(),
+                      _vm._v(" "),
                       _vm._l(_vm.errors, function(error, idx) {
                         return _c(
                           "div",

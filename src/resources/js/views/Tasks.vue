@@ -51,7 +51,7 @@
                                 </p>
                             </div>
                             <div class="card-footer">
-                                <router-link :to="{name: 'task.show', params: { id: task.id.toString(), task }}" class="btn btn-outline-primary btn-block shadow-sm">Detalhes</router-link>
+                                <router-link :to="{ name: 'task.show', params: { id: task.id.toString(), task }}" class="btn btn-outline-primary btn-block shadow-sm">Detalhes</router-link>
                             </div>
                         </div>
                     </div>

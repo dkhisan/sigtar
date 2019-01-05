@@ -55,128 +55,124 @@
             </div>
         </div>
         <div v-if="isDeleteModalActive">
-            <transition name="modal">
-                <div class="modal-mask">
-                    <div class="modal-wrapper">
-                        <div class="modal-dialog modal-dialog-centered" role="document">
-                            <div class="modal-content">
-                                <form @submit.prevent="destroy">
-                                    <div class="modal-body">
-                                        <p>Tem certeza que quer fazer isso? (Isso não pode ser desfeito)</p>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button class="btn btn-danger w-50" type="submit">Sim</button>
-                                        <button class="btn btn-secondary w-50" type="button" @click="closeDeleteModal">Não</button>
-                                    </div>
-                                </form>
-                            </div>
+            <div class="modal-mask">
+                <div class="modal-wrapper">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <form @submit.prevent="destroy">
+                                <div class="modal-body">
+                                    <p>Tem certeza que quer fazer isso? (Isso não pode ser desfeito)</p>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-danger w-50" type="submit">Sim</button>
+                                    <button class="btn btn-secondary w-50" type="button" @click="closeDeleteModal">Não</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
-            </transition>
+            </div>
         </div>
         <div v-if="isUpdateModalActive">
-            <transition name="modal">
-                <div class="modal-mask">
-                    <div class="modal-wrapper">
-                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-                            <div class="modal-content">
-                                <form @submit.prevent="submit">
-                                    <div class="modal-body">
-                                        <div class="row">
-                                            <div class="col-12" v-if="response.message">
-                                                <div class="alert alert-success">{{ response.message }}</div>
+            <div class="modal-mask">
+                <div class="modal-wrapper">
+                    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                        <div class="modal-content">
+                            <form @submit.prevent="submit">
+                                <div class="modal-body">
+                                    <div class="row">
+                                        <div class="col-12" v-if="response.message">
+                                            <div class="alert alert-success">{{ response.message }}</div>
+                                        </div>
+                                        <div class="col-12" v-if="errors">
+                                            <div class="alert alert-danger" v-for="(error, idx) in errors" :key="idx">
+                                                <span v-for="(err, idx) in error" :key="idx">{{ err }}</span>
                                             </div>
-                                            <div class="col-12" v-if="errors">
-                                                <div class="alert alert-danger" v-for="(error, idx) in errors" :key="idx">
-                                                    <span v-for="(err, idx) in error" :key="idx">{{ err }}</span>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-8 col-lg-9">
-                                                <div class="form-group">
-                                                    <label for="name">Nome</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
-                                                            <div class="input-group-text">
-                                                                <span class="fas fa-file-alt"></span>
-                                                            </div>
-                                                        </div>
-                                                        <input type="text" class="form-control" name="name" id="name" required
-                                                               v-bind:class="{ 'is-invalid': errors.name }" v-model="task_.name">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-sm-4 col-lg-3">
-                                                <div class="form-group">
-                                                    <label for="f-yes">Concluída</label>
-                                                    <div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="radio" name="finished" id="f-yes" value="1" v-model="task_.finished">
-                                                            <label class="form-check-label" for="f-yes">Sim</label>
-                                                        </div>
-                                                        <div class="form-check form-check-inline">
-                                                            <input class="form-check-input" type="radio" name="finished" id="f-no" value="0" v-model="task_.finished">
-                                                            <label class="form-check-label" for="f-no">Não</label>
+                                        </div>
+                                        <div class="col-sm-8 col-lg-9">
+                                            <div class="form-group">
+                                                <label for="name">Nome</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text">
+                                                            <span class="fas fa-file-alt"></span>
                                                         </div>
                                                     </div>
+                                                    <input type="text" class="form-control" name="name" id="name" required
+                                                            v-bind:class="{ 'is-invalid': errors.name }" v-model="task_.name">
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row">
-                                            <div class="col-12">
-                                                <div class="form-group">
-                                                    <label for="description">Descrição</label>
-                                                    <textarea class="form-control" name="description" id="description" rows="4" required
-                                                              v-bind:class="{ 'is-invalid': errors.description }" v-model="task_.description"></textarea>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-6">
-                                                <div class="form-group">
-                                                    <label for="deadline">Data limite</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
-                                                            <div class="input-group-text">
-                                                                <span class="fas fa-calendar-alt"></span>
-                                                            </div>
-                                                        </div>
-                                                        <input type="datetime-local" class="form-control" name="deadline" id="deadline" required
-                                                               v-bind:class="{ 'is-invalid': errors.deadline }" v-model="task_.deadline">
+                                        <div class="col-sm-4 col-lg-3">
+                                            <div class="form-group">
+                                                <label for="f-yes">Concluída</label>
+                                                <div>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="finished" id="f-yes" value="1" v-model="task_.finished">
+                                                        <label class="form-check-label" for="f-yes">Sim</label>
                                                     </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-6">
-                                                <div class="form-group">
-                                                    <label for="priority">Prioridade</label>
-                                                    <div class="input-group">
-                                                        <div class="input-group-prepend">
-                                                            <div class="input-group-text">
-                                                                <span class="fas fa-exclamation-triangle"></span>
-                                                            </div>
-                                                        </div>
-                                                        <select name="priority" id="priority" class="form-control" required
-                                                                v-bind:class="{ 'is-invalid': errors.priority }" v-model="task_.priority">
-                                                            <option value="low">Baixa</option>
-                                                            <option value="medium">Média</option>
-                                                            <option value="high">Alta</option>
-                                                            <option value="very_high">Muito Alta</option>
-                                                        </select>
+                                                    <div class="form-check form-check-inline">
+                                                        <input class="form-check-input" type="radio" name="finished" id="f-no" value="0" v-model="task_.finished">
+                                                        <label class="form-check-label" for="f-no">Não</label>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="submit" class="btn btn-primary w-50">Gravar</button>
-                                        <button type="button" class="btn btn-secondary w-50" @click="closeUpdateModal">Fechar</button>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="form-group">
+                                                <label for="description">Descrição</label>
+                                                <textarea class="form-control" name="description" id="description" rows="4" required
+                                                            v-bind:class="{ 'is-invalid': errors.description }" v-model="task_.description"></textarea>
+                                            </div>
+                                        </div>
                                     </div>
-                                </form>
-                            </div>
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label for="deadline">Data limite</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text">
+                                                            <span class="fas fa-calendar-alt"></span>
+                                                        </div>
+                                                    </div>
+                                                    <input type="datetime-local" class="form-control" name="deadline" id="deadline" required
+                                                            v-bind:class="{ 'is-invalid': errors.deadline }" v-model="task_.deadline">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label for="priority">Prioridade</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text">
+                                                            <span class="fas fa-exclamation-triangle"></span>
+                                                        </div>
+                                                    </div>
+                                                    <select name="priority" id="priority" class="form-control" required
+                                                            v-bind:class="{ 'is-invalid': errors.priority }" v-model="task_.priority">
+                                                        <option value="low">Baixa</option>
+                                                        <option value="medium">Média</option>
+                                                        <option value="high">Alta</option>
+                                                        <option value="very_high">Muito Alta</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="submit" class="btn btn-primary w-50">Gravar</button>
+                                    <button type="button" class="btn btn-secondary w-50" @click="closeUpdateModal">Fechar</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
-            </transition>
+            </div>
         </div>
     </div>
 </template>
@@ -184,19 +180,18 @@
 <script>
     export default {
         props: {
-            id: String,
+            id:   String,
             task: Object
         },
-
         data() {
             return {
                 response: {
-                    status: 0,
-                    error: '',
+                    status: '',
+                    error:  '',
                     success: false
                 },
-                errors: {},
-                task_: {},
+                errors: '',
+                task_:  '',
                 isUpdateModalActive: false,
                 isDeleteModalActive: false
             }
@@ -215,7 +210,7 @@
         methods: {
             fetchTask(task) {
                 this.response.success = false
-                this.response.error = ''
+                this.response.error   = ''
 
                 _api.call('get', `/api/tasks/${task}`)
                     .then(res => {
@@ -232,11 +227,11 @@
                     .catch(err => {
                         if (err.response) {
                             this.response.status = err.response.data.status
-                            this.response.error = err.response.data.error
+                            this.response.error  = err.response.data.error
                         }
                         else if (err.request) {
                             this.request.status = err.request.data.status
-                            this.response.error = err.request.data.error
+                            this.request.error  = err.request.data.error
                         }
                     })
             },
@@ -284,7 +279,7 @@
                 /*
                  * fix datetime to sql format
                  */
-                let deadlinefixed = this.task_.deadline.replace('T', ' ').concat(':00')
+                let deadlinefixed   = this.task_.deadline.replace('T', ' ').concat(':00')
                 this.task_.deadline = deadlinefixed
 
                 /*

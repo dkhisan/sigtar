@@ -7,6 +7,9 @@
                         <div class="card-body">
                             <div class="row">
                                 <div class="col-12">
+                                    <div class="alert alert-info" v-if="message_">
+                                        <span>{{ message_ }}</span>
+                                    </div>
                                     <div class="alert alert-danger" v-for="(error, idx) in errors" :key="idx">
                                         <span v-for="(err, idx) in error" :key="idx">{{ err }}</span>
                                     </div>
@@ -32,16 +35,27 @@
 </template>
 
 <script>
+    import { mapActions } from 'vuex'
+
     export default {
+        props: {
+            message: String
+        },
         data() {
             return {
-                uname: 255,
+                uname:  255,
                 plength: 20,
                 user: {
                     username: '',
                     password: ''
                 },
-                errors: {}
+                errors:   '',
+                message_: ''
+            }
+        },
+        created() {
+            if (this.message) {
+                this.message_ = this.message
             }
         },
         methods: {
@@ -68,13 +82,15 @@
                 }
             },
             login() {
-                let vm = this
                 _api.call('post', '/api/login', this.user)
                     .then(res => {
                         _auth.login({ 'token': res.data.token, 'user': res.data.user })
-                    })
-                    .then(() => {
-                        vm.$router.replace(vm.$route.query.redirect || '/')
+                        this.newSession({
+                            'session': { 'token': res.data.token, 'loggedIn': true },
+                            'user'   : res.data.user
+                        }).then(() => {
+                            this.$router.replace(this.$route.query.redirect || '/')
+                        })
                     })
                     .catch(err => {
                         if (err.response) {
@@ -84,7 +100,10 @@
                             this.errors = err.request.data.errors
                         }
                     })
-            }
+            },
+            ...mapActions([
+                'newSession'
+            ])
         }
     }
 </script>

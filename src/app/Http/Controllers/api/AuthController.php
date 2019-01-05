@@ -93,6 +93,6 @@ class AuthController extends Controller
 
         $token->revoke();
 
-        return response()->json(null, 200);
+        return response()->json(['message' => 'Desconectado com êxito.'], 200);
     }
 }

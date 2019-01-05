@@ -21,7 +21,6 @@ Route::middleware('auth:api')->group(function () {
      * group 'users'
      */
     Route::prefix('users')->group(function () {
-        Route::post('logout', 'api\AuthController@logout');
         Route::get('get', 'UserController@get');
     });
 
@@ -35,6 +34,8 @@ Route::middleware('auth:api')->group(function () {
         Route::patch('{id}/edit', 'api\TaskController@edit');
         Route::delete('{id}/remove', 'api\TaskController@destroy');
     });
+    
+    Route::post('logout', 'api\AuthController@logout');
 });
 
 /*

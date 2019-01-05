@@ -9,15 +9,15 @@ class Auth {
         }
     }
 
-    login(store) {
-        window.localStorage.setItem('token', store.token)
-        window.localStorage.setItem('user', JSON.stringify(store.user))
+    login(auth) {
+        window.localStorage.setItem('token', auth.token)
+        window.localStorage.setItem('user' , JSON.stringify(auth.user))
         window.localStorage.setItem('logged', true)
 
-        axios.defaults.headers.common['Authorization'] = `Bearer ${store.token}`
+        axios.defaults.headers.common['Authorization'] = `Bearer ${auth.token}`
 
-        this.token  = store.token
-        this.user_   = store.user
+        this.token  = auth.token
+        this.user_  = auth.user
         this.logged = true
     }
 
@@ -29,7 +29,7 @@ class Auth {
         axios.defaults.headers.common['Authorization'] = null
 
         this.token  = null
-        this.user_   = null
+        this.user_  = null
         this.logged = false
     }
 
@@ -48,14 +48,6 @@ class Auth {
      */
     isAuthenticated() {
         return this.logged && !!this.token
-    }
-
-    get userId() {
-        return this.user_.id
-    }
-
-    get user() {
-        return this.user_
     }
 }
 

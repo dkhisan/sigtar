@@ -37,6 +37,7 @@ const router = new Router({
             title: 'Login',
             name: 'login',
             path: '/login',
+            props: true,
             beforeEnter: authRedirect,
             component: UserLogin
         },
@@ -85,7 +86,7 @@ router.beforeEach((to, from, next) => {
         if (!_auth.isAuthenticated()) {
             next({
                 path: '/login',
-                query: {redirect: to.fullPath}
+                query: { redirect: to.fullPath }
             })
         }
     }
